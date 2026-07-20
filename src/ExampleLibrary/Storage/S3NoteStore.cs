@@ -7,6 +7,11 @@ using ExampleLibrary.Models;
 
 namespace ExampleLibrary.Storage;
 
+/// <summary>
+/// An <see cref="INoteStore"/> implementation backed by an S3 bucket. Each note is stored as a
+/// JSON object under a common key prefix, with title and creation time duplicated into object
+/// metadata so <see cref="ListNotesAsync"/> can build summaries without fetching object bodies.
+/// </summary>
 public class S3NoteStore : INoteStore
 {
 
@@ -23,6 +28,13 @@ public class S3NoteStore : INoteStore
         PropertyNamingPolicy = JsonNamingPolicy.CamelCase
     };
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="S3NoteStore"/> class.
+    /// </summary>
+    /// <param name="s3Client">The S3 client used to access the bucket.</param>
+    /// <param name="bucketName">The name of the bucket notes are stored in.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="s3Client"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="bucketName"/> is null or empty.</exception>
     public S3NoteStore(IAmazonS3 s3Client, string bucketName)
     {
         _s3Client = s3Client ?? throw new ArgumentNullException(nameof(s3Client));
@@ -35,6 +47,9 @@ public class S3NoteStore : INoteStore
         _bucketName = bucketName;
     }
 
+    /// <inheritdoc />
+    /// <exception cref="ArgumentNullException"><paramref name="note"/> is <c>null</c>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="note"/>'s <c>Id</c> is null or empty.</exception>
     public async Task PutNoteAsync(Note note, CancellationToken cancellationToken = default)
     {
         if (note is null)
@@ -62,6 +77,8 @@ public class S3NoteStore : INoteStore
         await _s3Client.PutObjectAsync(request, cancellationToken);
     }
 
+    /// <inheritdoc />
+    /// <exception cref="ArgumentException"><paramref name="id"/> is null or empty.</exception>
     public async Task<Note?> GetNoteAsync(string id, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(id))
@@ -84,6 +101,7 @@ public class S3NoteStore : INoteStore
         }
     }
 
+    /// <inheritdoc />
     public async Task<IEnumerable<NoteSummary>> ListNotesAsync(CancellationToken cancellationToken = default)
     {
         var summaries = new List<NoteSummary>();
@@ -118,6 +136,8 @@ public class S3NoteStore : INoteStore
         return summaries;
     }
 
+    /// <inheritdoc />
+    /// <exception cref="ArgumentException"><paramref name="id"/> is null or empty.</exception>
     public async Task DeleteNoteAsync(string id, CancellationToken cancellationToken = default)
     {
         if (string.IsNullOrWhiteSpace(id))
@@ -128,11 +148,14 @@ public class S3NoteStore : INoteStore
         await _s3Client.DeleteObjectAsync(_bucketName, BuildKey(id), cancellationToken);
     }
     
+    /// <summary>Builds the S3 object key for a note id.</summary>
     private static string BuildKey(string id) => $"{KeyPrefix}{id}.json";
-    
+
+    /// <summary>Recovers a note id from an S3 object key produced by <see cref="BuildKey"/>.</summary>
     private static string ExtractIdFromKey(string key) =>
         key.Substring(KeyPrefix.Length, key.Length - KeyPrefix.Length - ".json".Length);
 
+    /// <summary>Builds a <see cref="NoteSummary"/> from an object key and its S3 metadata.</summary>
     private static NoteSummary MapToSummary(string key, MetadataCollection metadata)
     {
         var id = ExtractIdFromKey(key);
