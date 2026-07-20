@@ -7,24 +7,29 @@ This repo's example library and tests can run entirely without a real AWS accoun
 
 1. Start LocalStack — the notes bucket is created and a starting note is seeded automatically
    once the container is healthy:
-   ```sh
+```sh
    docker compose up -d --wait
-   ```
+```
 
-2. Point `S3NoteStore` at LocalStack:
-   ```csharp
+2. Tests point `S3NoteStore` at LocalStack via `LocalStackFixture`
+   (`tests/ExampleLibrary.Tests/Storage/LocalStackFixture.cs`):
+```csharp
+   var endpoint = Environment.GetEnvironmentVariable("LOCALSTACK_ENDPOINT") ?? "http://localhost:4566";
+
    var s3Client = new AmazonS3Client(
        "test",
        "test",
        new AmazonS3Config
        {
-           ServiceURL = "http://localhost:4566",
+           ServiceURL = endpoint,
            ForcePathStyle = true,
            AuthenticationRegion = "us-west-2"
        });
 
    var store = new S3NoteStore(s3Client, bucketName: "notes-bucket");
-   ```
+```
+Works with no setup against the default `docker compose` port mapping. Only set
+`LOCALSTACK_ENDPOINT` if you're pointing at a non-default address.
 
 ## Running tests
 
@@ -86,5 +91,3 @@ This is different from the `LocalJsonFallbackPath` pattern used in
 fallback exists for *consumers* who want to develop their own app without any AWS dependency
 at all. `ExampleLibrary` doesn't need that, since it's a disposable demonstration, not a
 product meant to support Docker-free consumer development.
-
-<!-- TODO: confirm bucket name / client construction snippet once S3NoteStore is implemented -->

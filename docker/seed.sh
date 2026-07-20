@@ -19,12 +19,18 @@ echo "Seeding starting note..."
 NOTE_ID="seed-note-1"
 NOTE_TITLE="Welcome to ExampleLibrary"
 NOTE_CREATED_AT="2026-01-01T00:00:00Z"
-NOTE_BODY="{\"id\":\"${NOTE_ID}\",\"title\":\"${NOTE_TITLE}\",\"body\":\"This note was seeded automatically for local dev and integration tests.\",\"createdAt\":\"${NOTE_CREATED_AT}\"}"
+NOTE_FILE="/tmp/${NOTE_ID}.json"
 
-echo "${NOTE_BODY}" | awslocal s3api put-object \
+cat > "${NOTE_FILE}" <<EOF
+{"id":"${NOTE_ID}","title":"${NOTE_TITLE}","body":"This note was seeded automatically for local dev and integration tests.","createdAt":"${NOTE_CREATED_AT}"}
+EOF
+
+awslocal s3api put-object \
   --bucket "${BUCKET_NAME}" \
   --key "notes/${NOTE_ID}.json" \
-  --body /dev/stdin \
+  --body "${NOTE_FILE}" \
   --metadata title="${NOTE_TITLE}",created-at="${NOTE_CREATED_AT}"
+
+rm -f "${NOTE_FILE}"
 
 echo "Seed complete: bucket '${BUCKET_NAME}' ready with note '${NOTE_ID}'."
