@@ -1,6 +1,5 @@
 # dotnet-nuget-release-template
 
-<!-- TODO: one-line description, matches repo "About" field -->
 A GitHub template for packing and publishing multi-target .NET NuGet packages via Trusted
 Publishing (OIDC), with an optional container-based integration testing pattern.
 
@@ -18,41 +17,58 @@ Publishing (OIDC), with an optional container-based integration testing pattern.
 - `docker-compose.yml` + `docker/` — LocalStack setup used to run the example's integration
   tests as shipped
 
-<!-- TODO: confirm this list matches final repo contents once scaffolding is done -->
-
 ## How to use this template
 
 1. Click **"Use this template"** at the top of this repo (not Fork) to generate your own
    repo from this one.
 2. Replace `src/ExampleLibrary` (and its test project) with your own library.
-3. <!-- TODO: NUGET_USER secret setup instructions -->
-4. <!-- TODO: renaming steps — .csproj, namespace, solution file references -->
-5. <!-- TODO: how to trigger a release (tag format, e.g. vX.Y.Z) -->
+3. In your new repo's settings, add a `NUGET_USER` secret containing your NuGet.org profile
+   name (not your email) — see [Trusted Publishing setup](#trusted-publishing-setup) below.
+4. Rename the project: update the `.csproj` filename, `PackageId`, and root namespace to match
+   your library; update `ExampleLibrary.sln` and any project references accordingly; do the
+   same for the test project (`ExampleLibrary.Tests` → `YourLibrary.Tests`).
+5. Push a tag matching `v*` (e.g. `v1.0.0`) to trigger `release.yml` — it packs and publishes
+   automatically. The version in the package comes from the tag itself, not from anything
+   hardcoded in the `.csproj`.
 
 ## Customizing for your project
 
-<!-- TODO: TargetFrameworks guidance — this template is not net48-specific; explain how to
-     adjust <TargetFrameworks> in the .csproj -->
+This template is not net48-specific — `ci.yml`/`release.yml` run `dotnet restore`/`build`/
+`test`/`pack` generically against whatever `<TargetFrameworks>` your `.csproj` declares. Adjust
+that property to whatever frameworks you actually target.
 
-<!-- TODO: Mono step — where it lives in ci.yml, when to uncomment it (targeting net48 or
-     earlier) -->
+**Mono step (`ci.yml`, `release.yml`):** `ExampleLibrary` multi-targets `net48;net10.0` to
+demonstrate the pattern, so as shipped, this repo's own CI installs Mono to host the `net48`
+test run. If your project doesn't target `net48` (or another pre-.NET-Core framework), remove
+the `Setup Mono` step entirely — it's dead weight otherwise.
 
-<!-- TODO: LocalStack/Testcontainers block — explain this is REQUIRED for this template's own
-     CI (S3NoteStore integration test) but OPTIONAL once you replace ExampleLibrary with your
-     own project. Keep it, adapt it to a different service, or delete it entirely. -->
+**LocalStack/Docker block (`ci.yml`, `docker-compose.yml`, `docker/seed.sh`):** required for
+this template's own CI, since `S3NoteStoreTests` exercises it directly. Once you replace
+`ExampleLibrary` with your own project, this becomes entirely optional — keep it if your
+package touches an external dependency worth integration-testing, adapt it to a different
+service (any Testcontainers-supported image works the same way), or delete it if it doesn't
+apply.
 
 ## Trusted Publishing setup
 
-<!-- TODO: step-by-step for configuring Trusted Publishing on NuGet.org (linking the GitHub
-     repo/workflow) and adding the NUGET_USER repo secret -->
+1. On [NuGet.org](https://www.nuget.org), go to your account's **Trusted Publishing**
+   settings and add a new trusted publisher, linking it to your GitHub repo, the
+   `release.yml` workflow file, and (optionally) an environment name if you use one.
+2. In your GitHub repo, add a repository secret named `NUGET_USER` containing your NuGet.org
+   profile name (visible in your NuGet.org account settings — this is your username, not an
+   API key or email address).
+3. No other secrets are needed. `release.yml`'s `publish` job requests `id-token: write`
+   permission and exchanges a short-lived OIDC token for a NuGet API key at publish time via
+   `NuGet/login@v1` — nothing long-lived is stored in the repo.
 
 ## Repo hygiene (recommended)
 
-<!-- TODO: brief note on GitHub Rulesets used in this template repo itself — require PR,
-     1 approval, required status check, block force-pushes — and a suggestion that consumers
-     set up something similar on their generated repo -->
+This template repo itself uses a GitHub Ruleset on `main`: require a PR before merging, at
+least 1 approval, a required status check tied to the CI job, and force-pushes blocked (with
+the repo owner on the bypass list). Worth setting up something similar on your generated repo
+once `ci.yml` has run at least once — the required status check needs an existing check run to
+attach to, so add the Ruleset after your first CI run rather than before.
 
 ## License
 
-<!-- TODO: confirm MIT LICENSE file is present; reference it here -->
 MIT — see [LICENSE](https://github.com/dgates82/dotnet-nuget-release-template/blob/main/LICENSE).
