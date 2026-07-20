@@ -11,6 +11,7 @@
 .idea/
 .claudeignore
 CLAUDE.md
+NuGet.config
 
 # Build results
 [Dd]ebug/
