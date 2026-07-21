@@ -14,11 +14,11 @@ consistent.
 
 ## Development setup
 
-<!-- TODO: fill in once solution/csproj files exist -->
 - `dotnet restore`
 - `docker compose up -d --wait` — starts LocalStack, seeds the example bucket/note
   automatically
 - `dotnet test` — runs everything; use `--filter "Category!=Integration"` for unit tests only
+- See [LOCAL_DEV.md](docs/LOCAL_DEV.md) for the full local development walkthrough.
 
 ## Making changes
 
@@ -40,13 +40,23 @@ consistent.
 
 - 1 approval required before merge (GitHub Ruleset on `main`).
 - CI must pass — build, unit tests, and LocalStack-backed integration tests.
-- Squash merge is the default for `main`.
+- Merge via merge commit, not squash — keeps full commit history intact.
+
+## Versioning this template
+
+This repo is versioned independently from anything it helps publish. Tag template releases
+as `template-vX.Y.Z` (e.g. `template-v1.0.0`) — **not** `vX.Y.Z`, which is reserved for
+`release.yml`'s trigger and would attempt a real NuGet.org publish of `ExampleLibrary` if
+pushed here. Create a GitHub Release from the `template-v*` tag, referencing the matching
+`CHANGELOG.md` entry.
 
 ## What not to contribute
 
 - API keys, secrets, or anything that would require moving off Trusted Publishing (OIDC) —
   this template is intentionally secret-free.
-- net48-specific requirements baked in as defaults — Mono support stays commented-out/opt-in.
+- A hard requirement on `net48` (or Mono) for downstream consumers — this repo's own CI needs
+  Mono to test `ExampleLibrary`'s `net48` target, but that step must stay clearly documented
+  as removable for consumers who don't target `net48`.
 - A hard dependency on LocalStack/S3 specifically for downstream consumers — the template's
   own example uses it, but the pattern must stay swappable, not mandatory, in how it's
   documented.
