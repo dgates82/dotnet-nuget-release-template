@@ -10,6 +10,8 @@ for why this differs from the `vX.Y.Z` tags `release.yml` watches for.
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-07-21
+
 ### Added
 - Initial repo scaffolding: `ci.yml`, `release.yml` (Trusted Publishing via `NuGet/login@v1`,
   no API key secrets), `docker-compose.yml` + `docker/seed.sh` (LocalStack)
@@ -20,11 +22,16 @@ for why this differs from the `vX.Y.Z` tags `release.yml` watches for.
 - `ExampleLibrary.Tests`: unit tests for `NoteValidator` (always run), integration tests for
   `S3NoteStore` tagged `Category=Integration` (LocalStack-backed, required for this repo's own
   CI)
-- Solution-level docs: `README.md`, `CONTRIBUTING.md`, `LOCAL_DEV.md`
+- Solution-level docs: `README.md`, `CONTRIBUTING.md`, `docs/LOCAL_DEV.md`, including this
+  repo's own `template-vX.Y.Z` versioning convention (distinct from the `vX.Y.Z` tags
+  `release.yml` watches for)
 - `TODO(template)` marker convention for consumer edit-points (`ExampleLibrary.csproj`,
-  `LICENSE`, `dotnet-version` in both workflows, Mono/LocalStack steps)
-- GitHub Ruleset on `main` (require PR, 1 approval, required CI status check, block
-  force-pushes)
+  `LICENSE`, `DOTNET_VERSION` in both workflows, Mono/LocalStack steps)
+- Workflow-level `DOTNET_VERSION` env var in `ci.yml`/`release.yml`, a single edit-point per
+  file instead of per-job inline values
+- Verified end-to-end: generated a throwaway repo via "Use this template", followed the README
+  as a first-time consumer, published `DGates.NuGetTemplateVerification` to NuGet.org via
+  Trusted Publishing, confirmed success, unlisted the package, and deleted the throwaway repo
 
 <!--
 ## [X.Y.Z] - YYYY-MM-DD
