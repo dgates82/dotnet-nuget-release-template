@@ -26,21 +26,22 @@ Publishing (OIDC), with an optional container-based integration testing pattern.
    Mono and LocalStack steps in CI). Working through those markers covers most of the
    customization below.
 3. Replace `src/ExampleLibrary` (and its test project) with your own library.
-4. Configure Trusted Publishing and add the `NUGET_USER` secret — see
-   [Trusted Publishing setup](#trusted-publishing-setup) below.
-5. Rename `ExampleLibrary` throughout to match your library — the `.csproj` files, `.sln`,
+4. Rename `ExampleLibrary` throughout to match your library — the `.csproj` files, `.sln`,
    `PackageId`, root namespace, and the `ExampleLibrary.Tests` project. Update the project
    path references inside the `.sln` accordingly.
+5. Configure Trusted Publishing and add the `NUGET_USER` secret — see
+   [Trusted Publishing setup](#trusted-publishing-setup) below.
 6. Push a tag matching `v*` (e.g. `v1.0.0`) to trigger `release.yml` — it packs and publishes
    automatically. The version in the package comes from the tag itself, not from anything
    hardcoded in the `.csproj`.
 
 ## Customizing for your project
 
+**Target frameworks (`ExampleLibrary.csproj`, `DOTNET_VERSION` in both workflows):**
 `ci.yml`/`release.yml` run `dotnet restore`/`build`/`test`/`pack` generically against whatever
 `<TargetFrameworks>` your `.csproj` declares — adjust that property to whatever frameworks you
-actually target. If you change the framework versions, update `dotnet-version` in both
-workflows to match (this repo uses `10.0.x` for `ExampleLibrary`'s `net10.0` target).
+actually target. `DOTNET_VERSION` just needs to be an SDK at least as new as your newest
+target, not an exact match — this repo uses `10.0.x` for `ExampleLibrary`'s `net10.0` target.
 
 **Mono step (`ci.yml`, `release.yml`):** `ExampleLibrary` multi-targets `net48;net10.0` to
 demonstrate the pattern, so as shipped, this repo's own CI installs Mono to host the `net48`
