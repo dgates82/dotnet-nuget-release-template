@@ -3,6 +3,9 @@ on:
   push:
   pull_request:
   workflow_dispatch:
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 env:
   # TODO(template): update to match your TargetFrameworks.
   DOTNET_VERSION: '10.0.x'
