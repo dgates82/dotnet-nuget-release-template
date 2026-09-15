@@ -91,7 +91,12 @@ public class S3NoteStore : INoteStore
             var response = await _s3Client.GetObjectAsync(_bucketName, BuildKey(id), cancellationToken);
             
             using var reader = new StreamReader(response.ResponseStream, Encoding.UTF8);
-            var json = await  reader.ReadToEndAsync();
+#if NET7_0_OR_GREATER
+            var json = await reader.ReadToEndAsync(cancellationToken);
+#else
+            // StreamReader.ReadToEndAsync(CancellationToken) isn't available on net48.
+            var json = await reader.ReadToEndAsync();
+#endif
             
             return JsonSerializer.Deserialize<Note>(json, JsonOptions);
         }
