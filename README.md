@@ -58,6 +58,13 @@ package touches an external dependency worth integration-testing, adapt it to a 
 service (any Testcontainers-supported image works the same way), or delete it if it doesn't
 apply.
 
+**SonarQube Cloud static analysis (`ci.yml`):** every Sonar-related step in `build-and-test` is
+gated on `SONAR_TOKEN` being set, so CI passes cleanly on a freshly generated repo with no setup
+required. To turn analysis on, create a project on [SonarQube Cloud](https://sonarcloud.io) for
+your repo, then set `SONAR_TOKEN` (repo secret) and `SONAR_PROJECT_KEY`/`SONAR_ORG` (repo
+variables) to match. If you don't want SonarQube Cloud at all, remove the gated steps and the
+`SonarAnalyzer.CSharp` package reference from your library's `.csproj`.
+
 ## Trusted Publishing setup
 
 1. On [NuGet.org](https://www.nuget.org), go to your account's **Trusted Publishing**
