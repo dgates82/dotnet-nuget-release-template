@@ -10,6 +10,8 @@ for why this differs from the `vX.Y.Z` tags `release.yml` watches for.
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-09-15
+
 ### Added
 - `SonarAnalyzer.CSharp` as a build-time Roslyn analyzer on `ExampleLibrary` (`PrivateAssets=all`,
   never flows to consumers).
@@ -23,6 +25,9 @@ for why this differs from the `vX.Y.Z` tags `release.yml` watches for.
 
 ### Fixed
 - `NuGet/login@v1` pinned to a commit SHA (SonarQube Cloud finding).
+- `S3NoteStore.GetNoteAsync` now passes its `CancellationToken` through to the underlying
+  `StreamReader.ReadToEndAsync` call on `net10.0` (SonarQube Cloud finding, reliability/S8949);
+  gated behind `NET7_0_OR_GREATER` since that overload isn't available on `net48`.
 
 ## [1.0.0] - 2026-07-21
 
