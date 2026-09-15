@@ -19,6 +19,9 @@ Publishing (OIDC), with an optional container-based integration testing pattern.
   clearly marked/tagged)
 - `docker-compose.yml` + `docker/seed.sh` — LocalStack setup and seed script used to run the
   example's integration tests as shipped
+- SonarQube Cloud static analysis — wired into `ci.yml`'s `build-and-test` job (coverage,
+  quality gate), gated on `SONAR_TOKEN` so CI stays green until you configure your own project —
+  see [Customizing for your project](#customizing-for-your-project)
 
 ## How to use this template
 
@@ -57,6 +60,13 @@ this template's own CI, since `S3NoteStoreTests` exercises it directly. Once you
 package touches an external dependency worth integration-testing, adapt it to a different
 service (any Testcontainers-supported image works the same way), or delete it if it doesn't
 apply.
+
+**SonarQube Cloud static analysis (`ci.yml`):** every Sonar-related step in `build-and-test` is
+gated on `SONAR_TOKEN` being set, so CI passes cleanly on a freshly generated repo with no setup
+required. To turn analysis on, create a project on [SonarQube Cloud](https://sonarcloud.io) for
+your repo, then set `SONAR_TOKEN` (repo secret) and `SONAR_PROJECT_KEY`/`SONAR_ORG` (repo
+variables) to match. If you don't want SonarQube Cloud at all, remove the gated steps and the
+`SonarAnalyzer.CSharp` package reference from your library's `.csproj`.
 
 ## Trusted Publishing setup
 
