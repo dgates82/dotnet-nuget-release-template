@@ -19,6 +19,9 @@ Publishing (OIDC), with an optional container-based integration testing pattern.
   clearly marked/tagged)
 - `docker-compose.yml` + `docker/seed.sh` — LocalStack setup and seed script used to run the
   example's integration tests as shipped
+- SonarQube Cloud static analysis — wired into `ci.yml`'s `build-and-test` job (coverage,
+  quality gate), gated on `SONAR_TOKEN` so CI stays green until you configure your own project —
+  see [Customizing for your project](#customizing-for-your-project)
 
 ## How to use this template
 
