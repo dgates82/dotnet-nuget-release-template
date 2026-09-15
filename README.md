@@ -1,5 +1,8 @@
 # dotnet-nuget-release-template
 
+[![CI](https://github.com/dgates82/dotnet-nuget-release-template/actions/workflows/ci.yml/badge.svg)](https://github.com/dgates82/dotnet-nuget-release-template/actions/workflows/ci.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dgates_dotnet-nuget-release-template&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=dgates_dotnet-nuget-release-template)
+
 A GitHub template for packing and publishing multi-target .NET NuGet packages via Trusted
 Publishing (OIDC), with an optional container-based integration testing pattern.
 

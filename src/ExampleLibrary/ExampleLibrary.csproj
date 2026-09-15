@@ -24,4 +24,9 @@
     <ItemGroup>
       <PackageReference Include="AWSSDK.S3" Version="4.0.101.3" />
     </ItemGroup>
+    <ItemGroup>
+      <PackageReference Include="SonarAnalyzer.CSharp" Version="10.34.0.3385" PrivateAssets="all">
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+    </ItemGroup>
 </Project>

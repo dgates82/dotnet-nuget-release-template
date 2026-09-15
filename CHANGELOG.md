@@ -10,6 +10,20 @@ for why this differs from the `vX.Y.Z` tags `release.yml` watches for.
 
 ## [Unreleased]
 
+### Added
+- `SonarAnalyzer.CSharp` as a build-time Roslyn analyzer on `ExampleLibrary` (`PrivateAssets=all`,
+  never flows to consumers).
+- SonarQube Cloud static analysis, wired into `ci.yml`'s `build-and-test` job via
+  `dotnet-sonarscanner` and gated on the quality gate result, with coverage
+  (`dotnet test --collect:"XPlat Code Coverage"` across both unit and integration test runs)
+  fed into the scan via `sonar.cs.cobertura.reportsPaths`. Explicit `sonar.branch.name` for
+  non-PR triggers, `SONAR_PROJECT_KEY`/`SONAR_ORG` repo variables instead of hardcoded literals,
+  and every Sonar-related step gated on `SONAR_TOKEN` being set so forks and repos generated
+  from this template build cleanly before SonarQube Cloud is configured.
+
+### Fixed
+- `NuGet/login@v1` pinned to a commit SHA (SonarQube Cloud finding).
+
 ## [1.0.0] - 2026-07-21
 
 ### Added
