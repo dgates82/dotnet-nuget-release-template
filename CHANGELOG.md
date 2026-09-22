@@ -10,6 +10,13 @@ for why this differs from the `vX.Y.Z` tags `release.yml` watches for.
 
 ## [Unreleased]
 
+### Added
+- CodeQL static analysis (`.github/workflows/codeql.yml`), analyzing the `csharp`
+  language via GitHub's Advanced Setup — run independently of SonarQube Cloud. Path
+  exclusions cover `bin`/`obj`. Runs on push to `main`/`release/**`, on PRs, weekly on a
+  schedule, and via `workflow_dispatch`. No token or setup required, unlike SonarQube
+  Cloud's `SONAR_TOKEN` — repos generated from this template get it for free.
+
 ## [1.1.0] - 2026-09-15
 
 ### Added
