@@ -96,15 +96,6 @@ at all, delete the workflow file.
    permission and exchanges a short-lived OIDC token for a NuGet API key at publish time via
    `NuGet/login@v1` — nothing long-lived is stored in the repo.
 
-## Repo hygiene (recommended)
-
-This repo protects `main` with a GitHub Ruleset: require a PR before merging, at least 1
-approval, a required status check tied to the CI job, and force-pushes blocked (with the repo
-owner on the bypass list).
-
-Worth replicating on your generated repo — but add the Ruleset *after* your first CI run, since
-the required status check needs an existing check run to attach to.
-
 ## Part of a small ecosystem
 
 | Project | What it is | Reach for it when |
