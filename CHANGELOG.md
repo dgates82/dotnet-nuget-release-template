@@ -10,6 +10,8 @@ for why this differs from the `vX.Y.Z` tags `release.yml` watches for.
 
 ## [Unreleased]
 
+## [1.2.0] - 2026-09-22
+
 ### Added
 - CodeQL static analysis (`.github/workflows/codeql.yml`), analyzing the `csharp`
   language via GitHub's Advanced Setup — run independently of SonarQube Cloud. Path
