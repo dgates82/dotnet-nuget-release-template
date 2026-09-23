@@ -2,9 +2,15 @@
 
 [![CI](https://github.com/dgates82/dotnet-nuget-release-template/actions/workflows/ci.yml/badge.svg)](https://github.com/dgates82/dotnet-nuget-release-template/actions/workflows/ci.yml)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=dgates_dotnet-nuget-release-template&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=dgates_dotnet-nuget-release-template)
+[![CodeQL](https://github.com/dgates82/dotnet-nuget-release-template/actions/workflows/codeql.yml/badge.svg)](https://github.com/dgates82/dotnet-nuget-release-template/actions/workflows/codeql.yml)
 
 A GitHub template for packing and publishing multi-target .NET NuGet packages via Trusted
 Publishing (OIDC), with an optional container-based integration testing pattern.
+
+**Proven in production**: [`DGates.Identity.Jwt2Fa`](https://github.com/dgates82/DGates.Identity.Jwt2Fa)
+and [`DGates.Identity.NotificationProviders`](https://github.com/dgates82/DGates.Identity.NotificationProviders)
+are both real, published NuGet packages scaffolded from this template and still shipping —
+this isn't a placeholder.
 
 ## What's included
 
@@ -22,6 +28,9 @@ Publishing (OIDC), with an optional container-based integration testing pattern.
 - SonarQube Cloud static analysis — wired into `ci.yml`'s `build-and-test` job (coverage,
   quality gate), gated on `SONAR_TOKEN` so CI stays green until you configure your own project —
   see [Customizing for your project](#customizing-for-your-project)
+- `.github/workflows/codeql.yml` — CodeQL static analysis via GitHub's Advanced Setup,
+  independent of SonarQube Cloud and requiring no setup on a public repo — see
+  [Customizing for your project](#customizing-for-your-project)
 
 ## How to use this template
 
@@ -68,6 +77,13 @@ your repo, then set `SONAR_TOKEN` (repo secret) and `SONAR_PROJECT_KEY`/`SONAR_O
 variables) to match. If you don't want SonarQube Cloud at all, remove the gated steps and the
 `SonarAnalyzer.CSharp` package reference from your library's `.csproj`.
 
+**CodeQL static analysis (`.github/workflows/codeql.yml`):** unlike Sonar, nothing here is
+gated behind a token — on a public repo it just works, no setup required. Generating a
+**private** repo from this template is the one case to know about: code scanning on private
+repos requires a paid GitHub Code Security license, so the workflow will fail or be
+unavailable until you either add that license or remove `codeql.yml`. If you don't want CodeQL
+at all, delete the workflow file.
+
 ## Trusted Publishing setup
 
 1. On [NuGet.org](https://www.nuget.org), go to your account's **Trusted Publishing**
@@ -88,6 +104,18 @@ owner on the bypass list).
 
 Worth replicating on your generated repo — but add the Ruleset *after* your first CI run, since
 the required status check needs an existing check run to attach to.
+
+## Part of a small ecosystem
+
+| Project | What it is | Reach for it when |
+| --- | --- | --- |
+| **dotnet-nuget-release-template** (you are here) | GitHub template for packing/publishing multi-target NuGet packages via Trusted Publishing | you're starting a new NuGet package and want CI, release automation, and static analysis from day one |
+| [DGates.Identity.Jwt2Fa](https://github.com/dgates82/DGates.Identity.Jwt2Fa) | JWT + multi-channel 2FA for ASP.NET Core Identity — scaffolded from this template | example of a real package built on this template |
+| [DGates.Identity.NotificationProviders](https://github.com/dgates82/DGates.Identity.NotificationProviders) | Email/SMS senders for ASP.NET Core Identity — scaffolded from this template | another example, same template |
+| [angular-dotnet-auth-template](https://github.com/dgates82/angular-dotnet-auth-template) | Angular + .NET auth starter template consuming both packages above | see the whole chain in a real running app, with a live demo |
+
+More from dgates82: [DGates.AwsSecretsManager](https://github.com/dgates82/DGates.AwsSecretsManager)
+(not scaffolded from this template, but same portfolio).
 
 ## License
 

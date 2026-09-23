@@ -17,6 +17,11 @@ for why this differs from the `vX.Y.Z` tags `release.yml` watches for.
   schedule, and via `workflow_dispatch`. No token or setup required, unlike SonarQube
   Cloud's `SONAR_TOKEN` — repos generated from this template get it for free.
 
+### Changed
+- README: added a "Proven in production" callout naming the two real NuGet packages
+  scaffolded from this template, a CodeQL badge and customization paragraph, and a
+  package-ecosystem table.
+
 ## [1.1.0] - 2026-09-15
 
 ### Added
